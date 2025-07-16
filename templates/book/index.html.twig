@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Book index{% endblock %}
+
+{% block body %}
+    <h1 class="text-5xl">Books</h1>
+
+    
+    {% for book in books %}
+        <div class="card card-side bg-base-100 h-48 w-full max-w-4xl shadow-sm mx-auto mb-4">
+            <figure class="w-32 h-full overflow-hidden">
+                <img
+                    src={{ book.cover }}
+                    alt="Shoes" 
+                    class="w-full h-full object-cover object-center rounded-l" />
+            </figure>
+            <div class="card-body">
+                <h2 class="text-3xl font-bold">{{ book.title }}</h2>
+                <p class="text-xl">{{ book.priceInCents / 100 }} RON</p>
+                <div class="card-actions justify">
+                    <a href="{{ path('app_book_show', {'id': book.id}) }}" class="btn btn-primary">show</a>
+                    <a href="{{ path('app_book_edit', {'id': book.id}) }}" class="btn">edit</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <a href="{{ path('app_book_new') }}" class="btn btn-secondary">Create new</a>
+{% endblock %}
