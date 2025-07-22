@@ -7,6 +7,7 @@ namespace App\Dto\BookDtos;
 class FetchBookDto extends BaseBookDto
 {
     public int $id;
+    public int $priceInCents;
 
     public function __construct(
         int $id,
@@ -20,5 +21,6 @@ class FetchBookDto extends BaseBookDto
         $this->description = $description;
         $this->cover = $cover;
         $this->price = $priceInCents / 100;
+        $this->priceInCents = $priceInCents;
     }
 }

@@ -18,23 +18,26 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 
-#[Route('/api/book')]
+#[Route('/api/books')]
 #[OA\Tag(name: 'Books')]
 final class BookController extends AbstractController
 {
     public function __construct(
         private readonly IBookService $bookService,
-    ) 
-    {
-    }
+    ) {}
 
     #[Route(name: 'api_get_book_list', methods: ['GET'])]
     #[OA\Response(
         response: 200,
         description: 'Returns a list of books',
         content: new OA\JsonContent(
-            type: 'array',
-            items: new OA\Items(ref: new Model(type: FetchBookDto::class))
+            properties: [
+                new OA\Property(
+                    property: 'Books',
+                    type: 'array',
+                    items: new OA\Items(ref: new Model(type: FetchBookDto::class))
+                )
+            ]
         )
     )]
     public function index(): Response
@@ -42,7 +45,7 @@ final class BookController extends AbstractController
         try {
             $books = $this->bookService->fetchBooks();
             return $this->json([
-                'books' => $books,
+                'Books' => $books,
             ]);
         } catch (InvalidArgumentException $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);

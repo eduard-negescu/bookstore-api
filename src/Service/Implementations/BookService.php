@@ -18,11 +18,11 @@ readonly class BookService implements IBookService
     public function __construct(
         private BookRepository         $bookRepository,
         private EntityManagerInterface $entityManager
-    ) 
-    {
-    }
+    ) {}
 
-    /** @return list<FetchBookDto> */
+    /** 
+     * @return list<FetchBookDto> 
+     */
     public function fetchBooks(): array
     {
         $books_db = $this->bookRepository->findAll();

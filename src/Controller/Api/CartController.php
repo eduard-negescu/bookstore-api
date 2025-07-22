@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Service\IBookService;
 use App\Service\ICartService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,9 +20,8 @@ class CartController extends AbstractController
 {
     public function __construct(
         private readonly ICartService $cartService,
-    ) 
-    {
-    }
+        private readonly IBookService $bookService,
+    ) {}
     
     #[Route('/{bookId}', name: 'api_add_book_to_cart', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
@@ -42,6 +42,13 @@ class CartController extends AbstractController
     public function addBookToCart(int $bookId): Response
     {
         $username = $this->getUser()->getUserIdentifier();
+
+        try {
+            $this->bookService->fetchBookById($bookId);
+        } catch (\Exception $e) {
+            return $this->json(['message' => 'Book not found'], Response::HTTP_NOT_FOUND);
+        }
+
         $this->cartService->addBookToCart($username, $bookId);
         return $this->json(['message' => 'Book added to cart'], Response::HTTP_OK);
     }
@@ -112,5 +119,28 @@ class CartController extends AbstractController
         $username = $this->getUser()->getUserIdentifier();
         $this->cartService->clearCart($username);
         return $this->json(['message' => 'Cart cleared'], Response::HTTP_OK);
+    }
+
+    #[Route('/total', name: 'api_get_cart_total', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    #[OA\Get(
+        summary: 'Get the total amount from the user\'s cart',
+        security: [['bearerAuth' => []]],
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns the total amount from the user\'s cart',
+        content: new OA\JsonContent(
+            type: 'object',
+            properties: [
+                new OA\Property(property: 'total', type: 'integer')
+            ]
+        )
+    )]
+    public function getTotalAmountFromCart(): Response
+    {
+        $username = $this->getUser()->getUserIdentifier();
+        $total = $this->cartService->getTotalAmountInCents($username);
+        return $this->json(['total' => (float)$total / 100], Response::HTTP_OK);
     }
 }

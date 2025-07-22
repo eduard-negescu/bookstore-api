@@ -16,4 +16,6 @@ interface ICartService
     public function getCart(string $username): array;
 
     public function clearCart(string $username): void;
+
+    public function getTotalAmountInCents(string $username): int;
 }

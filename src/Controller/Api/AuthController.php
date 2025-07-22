@@ -23,9 +23,7 @@ class AuthController extends AbstractController
 {
     public function __construct(
         private readonly IAuthService $authService,
-    )
-    {
-    }
+    ) {}
 
     #[Route('/login', name: 'login', methods: ['POST'])]
     #[OA\RequestBody(

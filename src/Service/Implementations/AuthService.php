@@ -22,9 +22,7 @@ readonly class AuthService implements IAuthService
         private JWTEncoderInterface    $jwtEncoder,
         private UserRepository         $userRepository,
         private EntityManagerInterface $entityManager
-    )
-    {
-    }
+    ) {}
 
     /**
      * @throws JWTEncodeFailureException

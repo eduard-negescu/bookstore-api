@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Implementations;
 
 use App\Service\ICartService;
+use App\Service\IBookService;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -15,9 +16,8 @@ class CartService implements ICartService
     
     public function __construct(
         private CacheInterface $cache,
-    ) 
-    {
-    }
+        private IBookService $bookService // Assuming IBookService is injected to get book prices
+    ) {}
     
     private function getCacheKey(string $username): string
     {
@@ -79,5 +79,26 @@ class CartService implements ICartService
     {
         $key = $this->getCacheKey($username);
         $this->cache->delete($key);
+    }
+    
+    public function getTotalAmountInCents(string $username): int
+    {
+        $cart = $this->getCart($username);
+        $total = 0;
+
+        foreach ($cart as $bookId) {
+            // Assuming a method to get book price by ID exists
+            $book = $this->bookService->fetchBookById($bookId);
+            
+            if (!$book) {
+                continue; // Skip if book not found
+            }
+
+            $price = $book->priceInCents;
+
+            $total += $price;
+        }
+
+        return $total;
     }
 }
