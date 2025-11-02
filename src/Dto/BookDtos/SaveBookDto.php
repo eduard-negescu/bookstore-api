@@ -42,4 +42,16 @@ class SaveBookDto extends BaseBookDto
         message: 'Price must have at most two digits after the decimal point.'
     )]
     public float $price;
+
+    public function __construct(
+        string $title,
+        ?string $description,
+        ?string $cover,
+        float $price
+    ) {
+        $this->title = $title;
+        $this->description = $description;
+        $this->cover = $cover;
+        $this->price = $price;
+    }
 }

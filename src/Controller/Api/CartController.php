@@ -12,8 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
-
 #[Route('/api/cart')]
 #[OA\Tag(name: 'Cart')]
 class CartController extends AbstractController
@@ -22,7 +20,7 @@ class CartController extends AbstractController
         private readonly ICartService $cartService,
         private readonly IBookService $bookService,
     ) {}
-    
+
     #[Route('/{bookId}', name: 'api_add_book_to_cart', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     #[OA\Post(
@@ -76,7 +74,7 @@ class CartController extends AbstractController
         return $this->json(['message' => 'Book removed from cart'], Response::HTTP_OK);
     }
 
-    
+
     #[Route(name: 'api_get_cart', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     #[OA\Get(
